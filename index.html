@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#111827">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Drywall Hit List">
+<link rel="manifest" href="manifest.json">
+<title>People's Drywall Hit List</title>
+<style>
+:root{--bg:#f2f4f7;--card:#fff;--ink:#111827;--muted:#6b7280;--line:#e5e7eb;--blue:#1d4ed8;--green:#15803d;--amber:#b45309;--red:#b91c1c}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;padding-bottom:90px}
+header{background:#111827;color:white;padding:calc(16px + env(safe-area-inset-top)) 18px 16px;position:sticky;top:0;z-index:10}
+header h1{font-size:22px;margin:0;font-weight:800}header p{font-size:12px;color:#cbd5e1;margin:4px 0 0}
+nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding:7px 5px calc(7px + env(safe-area-inset-bottom));z-index:20}
+nav button{border:0;background:none;color:#6b7280;font-size:10px;font-weight:700;padding:6px 2px}nav button span{display:block;font-size:21px;margin-bottom:2px}nav button.active{color:#111827}
+main{max-width:720px;margin:auto;padding:14px}.panel{display:none}.panel.active{display:block}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}.metric{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px}.metric b{font-size:28px;display:block}.metric span{font-size:12px;color:var(--muted)}
+.section{display:flex;justify-content:space-between;align-items:center;margin:20px 0 10px}.section h2{font-size:18px;margin:0}
+.primary{border:0;background:#111827;color:#fff;border-radius:12px;padding:12px 15px;font-weight:800}.secondary{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 11px;font-weight:700}
+.search{width:100%;border:1px solid var(--line);border-radius:12px;padding:13px;font-size:16px;margin-bottom:10px;background:#fff}
+.list{display:grid;gap:10px}.job{background:#fff;border:1px solid var(--line);border-radius:16px;padding:15px}.job h3{margin:0 0 5px;font-size:17px}.meta{font-size:13px;color:var(--muted);line-height:1.55}.badges{display:flex;flex-wrap:wrap;gap:6px;margin:9px 0}.badge{font-size:11px;font-weight:800;border-radius:99px;padding:5px 8px;background:#eef2ff}.badge.red{background:#fee2e2;color:var(--red)}.badge.amber{background:#fef3c7;color:var(--amber)}.badge.green{background:#dcfce7;color:var(--green)}.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.empty{background:#fff;border:1px dashed #cbd5e1;border-radius:16px;text-align:center;padding:30px;color:var(--muted)}
+.fab{position:fixed;right:18px;bottom:92px;width:58px;height:58px;border-radius:50%;border:0;background:#111827;color:white;font-size:30px;box-shadow:0 5px 18px #0003;z-index:15}
+dialog{width:94%;max-width:600px;border:0;border-radius:20px;padding:0;box-shadow:0 20px 60px #0005}dialog::backdrop{background:#0008}
+form{padding:20px;max-height:88vh;overflow:auto}form h2{margin:0 0 15px}label{display:block;font-size:12px;font-weight:800;margin:11px 0 5px;color:#374151}input,select,textarea{width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;font-size:16px;background:#fff}textarea{min-height:90px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}
+.install{background:#eff6ff;border:1px solid #bfdbfe;border-radius:14px;padding:13px;font-size:13px;margin-top:14px}.install b{display:block;margin-bottom:3px}
+@media(max-width:520px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><h1>People's Drywall Hit List</h1><p>Your private job & contractor tracker</p></header>
+
+<main>
+<section id="dashboard" class="panel active">
+<div class="cards">
+<div class="metric"><b id="total">0</b><span>Total prospects</span></div>
+<div class="metric"><b id="due">0</b><span>Follow-ups due</span></div>
+<div class="metric"><b id="drive">0</b><span>Drive-bys</span></div>
+<div class="metric"><b id="large">0</b><span>Large projects</span></div>
+</div>
+<div class="install"><b>📱 iPhone tip</b>For the full app-like experience, open this app in Safari and use <b>Share → Add to Home Screen</b>.</div>
+<div class="section"><h2>Needs attention</h2><button class="primary" onclick="openForm()">+ Add Job</button></div>
+<div id="attention" class="list"></div>
+</section>
+
+<section id="drivebys" class="panel">
+<div class="section"><h2>🚗 Drive-Bys</h2></div>
+<input id="driveSearch" class="search" placeholder="Search contractor or address..." oninput="render()">
+<div id="driveList" class="list"></div>
+</section>
+
+<section id="followups" class="panel">
+<div class="section"><h2>📞 Follow Ups</h2></div>
+<div id="followList" class="list"></div>
+</section>
+
+<section id="large" class="panel">
+<div class="section"><h2>🏗️ Large Projects</h2></div>
+<input id="largeSearch" class="search" placeholder="Search project or contractor..." oninput="render()">
+<div id="largeList" class="list"></div>
+</section>
+</main>
+
+<button class="fab" onclick="openForm()" aria-label="Add job">+</button>
+
+<nav>
+<button class="tab active" data-tab="dashboard"><span>🏠</span>Home</button>
+<button class="tab" data-tab="drivebys"><span>🚗</span>Drive-Bys</button>
+<button class="tab" data-tab="followups"><span>📞</span>Follow Ups</button>
+<button class="tab" data-tab="large"><span>🏗️</span>Large</button>
+</nav>
+
+<dialog id="dlg">
+<form id="jobForm">
+<h2 id="formTitle">Add Job</h2><input type="hidden" id="id">
+<div class="grid">
+<div><label>Company / Contractor</label><input id="company" required></div>
+<div><label>Contact Name</label><input id="contact"></div>
+<div><label>Phone</label><input id="phone" type="tel"></div>
+<div><label>Email</label><input id="email" type="email"></div>
+</div>
+<label>Project Name</label><input id="project">
+<label>Job-Site Address</label><input id="address">
+<div class="grid">
+<div><label>Type</label><select id="type"><option>Drive-By</option><option>Large Project</option></select></div>
+<div><label>Status</label><select id="status"><option>New</option><option>Visited</option><option>Followed Up</option><option>Quoted</option><option>Waiting</option><option>Won</option><option>Lost</option></select></div>
+<div><label>Date Visited</label><input id="visited" type="date"></div>
+<div><label>Follow-up Date</label><input id="followup" type="date"></div>
+<div><label>Tender Closing Date</label><input id="tender" type="date"></div>
+<div><label>Estimated Drywall Value ($)</label><input id="value" type="number" min="0" step="100"></div>
+</div>
+<label>Notes</label><textarea id="notes" placeholder="Site details, contact notes, scope, next steps..."></textarea>
+<div class="form-actions"><button type="button" class="secondary" onclick="dlg.close()">Cancel</button><button class="primary">Save Job</button></div>
+</form>
+</dialog>
+
+<script>
+const KEY='peoplesDrywallHitListV2';
+let jobs=JSON.parse(localStorage.getItem(KEY)||'[]');
+const $=id=>document.getElementById(id), dlg=$('dlg');
+function save(){localStorage.setItem(KEY,JSON.stringify(jobs));render()}
+function today(){return new Date().toISOString().slice(0,10)}
+function fmt(d){return d?new Date(d+'T12:00:00').toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'}):'—'}
+function due(j){return j.followup&&j.followup<=today()&&!['Won','Lost'].includes(j.status)}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function card(j){return `<article class="job"><h3>${esc(j.company||'Unnamed')}${j.project?' — '+esc(j.project):''}</h3><div class="meta">${j.contact?'Contact: '+esc(j.contact)+'<br>':''}${j.address?'📍 '+esc(j.address)+'<br>':''}${j.phone?'☎ '+esc(j.phone)+' ':''}${j.email?'✉ '+esc(j.email):''}</div><div class="badges"><span class="badge ${j.status==='Won'?'green':due(j)?'red':['Quoted','Waiting'].includes(j.status)?'amber':''}">${esc(j.status)}</span><span class="badge">${j.type}</span>${due(j)?'<span class="badge red">FOLLOW-UP DUE</span>':''}</div><div class="meta">Visited: ${fmt(j.visited)} · Follow-up: ${fmt(j.followup)}${j.tender?' · Tender: '+fmt(j.tender):''}${j.value?' · Est. $'+Number(j.value).toLocaleString():''}</div>${j.notes?'<div style="margin-top:8px;font-size:13px">'+esc(j.notes)+'</div>':''}<div class="actions"><button class="secondary" onclick="editJob('${j.id}')">Edit</button>${j.phone?'<button class="secondary" onclick="location.href=\\'tel:'+esc(j.phone)+'\\'">☎ Call</button>':''}${j.email?'<button class="secondary" onclick="location.href=\\'mailto:'+esc(j.email)+'\\'">✉ Email</button>':''}${due(j)?'<button class="secondary" onclick="completeFollow(\\''+j.id+'\\')">✓ Followed Up</button>':''}<button class="secondary" onclick="removeJob('${j.id}')">Delete</button></div></article>`}
+function render(){
+$('total').textContent=jobs.length;$('due').textContent=jobs.filter(due).length;$('drive').textContent=jobs.filter(j=>j.type==='Drive-By').length;$('large').textContent=jobs.filter(j=>j.type==='Large Project').length;
+let a=jobs.filter(due).sort((x,y)=>x.followup.localeCompare(y.followup)).slice(0,8);$('attention').innerHTML=a.length?a.map(card).join(''):'<div class="empty">Nothing needs attention right now.<br>Tap + to add a job.</div>';
+let ds=($('driveSearch').value||'').toLowerCase();let d=jobs.filter(j=>j.type==='Drive-By'&&JSON.stringify(j).toLowerCase().includes(ds));$('driveList').innerHTML=d.length?d.map(card).join(''):'<div class="empty">No drive-bys yet.</div>';
+let f=jobs.filter(j=>j.followup).sort((x,y)=>x.followup.localeCompare(y.followup));$('followList').innerHTML=f.length?f.map(card).join(''):'<div class="empty">No follow-ups yet.</div>';
+let ls=($('largeSearch').value||'').toLowerCase();let l=jobs.filter(j=>j.type==='Large Project'&&JSON.stringify(j).toLowerCase().includes(ls));$('largeList').innerHTML=l.length?l.map(card).join(''):'<div class="empty">No large projects yet.</div>';
+}
+function openForm(type){$('jobForm').reset();$('id').value='';$('visited').value=today();$('type').value=type==='large'?'Large Project':'Drive-By';$('formTitle').textContent=type==='large'?'Add Large Project':'Add Drive-By';dlg.showModal()}
+function editJob(id){let j=jobs.find(x=>x.id===id);if(!j)return;['id','company','contact','phone','email','project','address','type','status','visited','followup','tender','value','notes'].forEach(k=>$(k).value=j[k]||'');$('formTitle').textContent='Edit Job';dlg.showModal()}
+$('jobForm').onsubmit=e=>{e.preventDefault();let id=$('id').value||crypto.randomUUID(),j={id};['company','contact','phone','email','project','address','type','status','visited','followup','tender','value','notes'].forEach(k=>j[k]=$(k).value);let i=jobs.findIndex(x=>x.id===id);i>=0?jobs[i]=j:jobs.push(j);save();dlg.close()}
+function completeFollow(id){let j=jobs.find(x=>x.id===id);j.status='Followed Up';let d=new Date();d.setDate(d.getDate()+7);j.followup=d.toISOString().slice(0,10);save()}
+function removeJob(id){if(confirm('Delete this job?')){jobs=jobs.filter(j=>j.id!==id);save()}}
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');$(b.dataset.tab).classList.add('active');render()});
+if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(()=>{});
+render();
+</script>
+</body>
+</html>
