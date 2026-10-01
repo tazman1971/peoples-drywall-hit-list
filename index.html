@@ -76,7 +76,7 @@ nav button .nav-icon{display:block;width:20px;height:20px;margin:0 auto 3px}nav 
     <div class="metric"><b id="largeCount">0</b><span>Large projects</span></div>
   </div>
 
-  <div class="install"><b><span class="tip-icon" aria-hidden="true">â</span> iPhone tip</b>For the full app-like experience, open this app in Safari and use <b>Share â Add to Home Screen</b>.</div>
+  <div class="install"><b><span class="tip-icon" aria-hidden="true">â</span> iPhone tip</b>For the full app-like experience, open this app in Safari and use <b>Share &rarr; Add to Home Screen</b>.</div>
 
   <div class="section">
     <h2>Needs attention</h2>
@@ -215,9 +215,9 @@ function card(j) {
 
       <div class="meta">
         ${j.contact ? 'Contact: ' + esc(j.contact) + '<br>' : ''}
-        ${j.address ? 'ð ' + esc(j.address) + '<br>' : ''}
-        ${j.phone ? 'â ' + esc(j.phone) + ' ' : ''}
-        ${j.email ? 'â ' + esc(j.email) : ''}
+        ${j.address ? '' + esc(j.address) + '<br>' : ''}
+        ${j.phone ? 'Phone: ' + esc(j.phone) + ' ' : ''}
+        ${j.email ? 'Email: ' + esc(j.email) : ''}
       </div>
 
       <div class="badges">
@@ -227,18 +227,18 @@ function card(j) {
       </div>
 
       <div class="meta">
-        Visited: ${fmt(j.visited)} Â· Follow-up: ${fmt(j.followup)}
-        ${j.tender ? ' Â· Tender: ' + fmt(j.tender) : ''}
-        ${j.value ? ' Â· Est. $' + Number(j.value).toLocaleString() : ''}
+        Visited: ${fmt(j.visited)} &middot; Follow-up: ${fmt(j.followup)}
+        ${j.tender ? ' &middot; Tender: ' + fmt(j.tender) : ''}
+        ${j.value ? ' &middot; Est. $' + Number(j.value).toLocaleString() : ''}
       </div>
 
       ${j.notes ? '<div style="margin-top:8px;font-size:13px">' + esc(j.notes) + '</div>' : ''}
 
       <div class="actions">
         <button type="button" class="secondary job-action" data-action="edit" data-id="${esc(j.id)}">Edit</button>
-        ${j.phone ? '<button type="button" class="secondary job-action" data-action="call" data-id="' + esc(j.id) + '">â Call</button>' : ''}
-        ${j.email ? '<button type="button" class="secondary job-action" data-action="email" data-id="' + esc(j.id) + '">â Email</button>' : ''}
-        ${due(j) ? '<button type="button" class="secondary job-action" data-action="complete" data-id="' + esc(j.id) + '">â Followed Up</button>' : ''}
+        ${j.phone ? '<button type="button" class="secondary job-action" data-action="call" data-id="' + esc(j.id) + '">Phone: Call</button>' : ''}
+        ${j.email ? '<button type="button" class="secondary job-action" data-action="email" data-id="' + esc(j.id) + '">Email: Email</button>' : ''}
+        ${due(j) ? '<button type="button" class="secondary job-action" data-action="complete" data-id="' + esc(j.id) + '">Followed Up</button>' : ''}
         <button type="button" class="secondary job-action" data-action="delete" data-id="${esc(j.id)}">Delete</button>
       </div>
     </article>
