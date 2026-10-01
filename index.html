@@ -76,7 +76,7 @@ nav button .nav-icon{display:block;width:20px;height:20px;margin:0 auto 3px}nav 
     <div class="metric"><b id="largeCount">0</b><span>Large projects</span></div>
   </div>
 
-  <div class="install"><b><span class="tip-icon" aria-hidden="true">â</span> iPhone tip</b>For the full app-like experience, open this app in Safari and use <b>Share &rarr; Add to Home Screen</b>.</div>
+  <div class="install"><b>iPhone tip</b>For the full app-like experience, open this app in Safari and use <b>Share -> Add to Home Screen</b>.</div>
 
   <div class="section">
     <h2>Needs attention</h2>
@@ -86,18 +86,18 @@ nav button .nav-icon{display:block;width:20px;height:20px;margin:0 auto 3px}nav 
 </section>
 
 <section id="drivebys" class="panel">
-  <div class="section"><h2><span class="ui-icon" aria-hidden="true">â£</span> Drive-Bys</h2></div>
+  <div class="section"><h2>Drive-Bys</h2></div>
   <input id="driveSearch" class="search" placeholder="Search contractor or address..." autocomplete="off">
   <div id="driveList" class="list"></div>
 </section>
 
 <section id="followups" class="panel">
-  <div class="section"><h2><span class="ui-icon" aria-hidden="true">â</span> Follow Ups</h2></div>
+  <div class="section"><h2>Follow Ups</h2></div>
   <div id="followList" class="list"></div>
 </section>
 
 <section id="largeprojects" class="panel">
-  <div class="section"><h2><span class="ui-icon" aria-hidden="true">â¥</span> Large Projects</h2></div>
+  <div class="section"><h2>Large Projects</h2></div>
   <input id="largeSearch" class="search" placeholder="Search project or contractor..." autocomplete="off">
   <div id="largeList" class="list"></div>
 </section>
@@ -183,7 +183,7 @@ function fmt(d) {
     ? new Date(d + 'T12:00:00').toLocaleDateString(undefined, {
         month: 'short', day: 'numeric', year: 'numeric'
       })
-    : 'â';
+    : '-';
 }
 
 function due(j) {
@@ -211,11 +211,11 @@ function card(j) {
 
   return `
     <article class="job">
-      <h3>${esc(j.company || 'Unnamed')}${j.project ? ' â ' + esc(j.project) : ''}</h3>
+      <h3>${esc(j.company || 'Unnamed')}${j.project ? ' - ' + esc(j.project) : ''}</h3>
 
       <div class="meta">
         ${j.contact ? 'Contact: ' + esc(j.contact) + '<br>' : ''}
-        ${j.address ? '' + esc(j.address) + '<br>' : ''}
+        ${j.address ? 'Address: ' + esc(j.address) + '<br>' : ''}
         ${j.phone ? 'Phone: ' + esc(j.phone) + ' ' : ''}
         ${j.email ? 'Email: ' + esc(j.email) : ''}
       </div>
@@ -227,17 +227,17 @@ function card(j) {
       </div>
 
       <div class="meta">
-        Visited: ${fmt(j.visited)} &middot; Follow-up: ${fmt(j.followup)}
-        ${j.tender ? ' &middot; Tender: ' + fmt(j.tender) : ''}
-        ${j.value ? ' &middot; Est. $' + Number(j.value).toLocaleString() : ''}
+        Visited: ${fmt(j.visited)} - Follow-up: ${fmt(j.followup)}
+        ${j.tender ? ' | Tender: ' + fmt(j.tender) : ''}
+        ${j.value ? ' | Est. $' + Number(j.value).toLocaleString() : ''}
       </div>
 
       ${j.notes ? '<div style="margin-top:8px;font-size:13px">' + esc(j.notes) + '</div>' : ''}
 
       <div class="actions">
         <button type="button" class="secondary job-action" data-action="edit" data-id="${esc(j.id)}">Edit</button>
-        ${j.phone ? '<button type="button" class="secondary job-action" data-action="call" data-id="' + esc(j.id) + '">Phone: Call</button>' : ''}
-        ${j.email ? '<button type="button" class="secondary job-action" data-action="email" data-id="' + esc(j.id) + '">Email: Email</button>' : ''}
+        ${j.phone ? '<button type="button" class="secondary job-action" data-action="call" data-id="' + esc(j.id) + '">Call</button>' : ''}
+        ${j.email ? '<button type="button" class="secondary job-action" data-action="email" data-id="' + esc(j.id) + '">Email</button>' : ''}
         ${due(j) ? '<button type="button" class="secondary job-action" data-action="complete" data-id="' + esc(j.id) + '">Followed Up</button>' : ''}
         <button type="button" class="secondary job-action" data-action="delete" data-id="${esc(j.id)}">Delete</button>
       </div>
@@ -385,7 +385,7 @@ $('jobForm').addEventListener('submit', event => {
   dlg.close();
 });
 
-/* Job buttons â one safe event handler for all cards */
+/* Job buttons - one safe event handler for all cards */
 document.addEventListener('click', event => {
   const button = event.target.closest('.job-action');
   if (!button) return;
